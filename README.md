@@ -21,6 +21,8 @@ https://docs.espressif.com/projects/esp-adf/en/latest/get-started/index.html#get
 Now do step 2 of the guide
 https://docs.espressif.com/projects/esp-adf/en/latest/get-started/index.html#step-2-get-esp-adf
 
+install ```git``` if you haven't
+
 Follow step 3 of the guide
 https://docs.espressif.com/projects/esp-adf/en/latest/get-started/index.html#step-3-set-up-the-environment
 
