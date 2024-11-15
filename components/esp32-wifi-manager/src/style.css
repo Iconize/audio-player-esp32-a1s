@@ -1,0 +1,42 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+}
+
+.container {
+    display: flex;
+    gap: 2%; /* Space between the faders, using percentage */
+    height: 50%; /* Set the height of the container */
+}
+
+.fader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #2F2F2F; /* Dark gray background for each fader */
+    padding: 10%; /* Add padding around the fader */
+    border-radius: 15px; /* Rounded corners */
+    width: 25%; /* Set a width for the fader block */
+    height: 110%; /* Set a height for the fader container */
+    justify-content: flex-end; /* Align items at the bottom */
+}
+
+input[type="range"] {
+    transform: rotate(270deg); /* Rotate the fader */
+    width: 400%; /* Make the fader wider to appear longer vertically */
+    height: 10%; /* Adjust the height to maintain proportions */
+    margin-bottom: 200%; /* Add margin at the bottom of the fader */
+    
+}
+
+label {
+    margin-top: 2%; /* Space between the fader and label using percentage */
+    font-weight: bold;
+    color: white; /* White text color for the label */
+}
+

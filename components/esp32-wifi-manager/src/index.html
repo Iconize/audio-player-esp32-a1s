@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Audio Mixer</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            background-color: #183113;
+            user-select: none;
+            position: fixed;
+            overflow: hidden;
+            touch-action: pan-down !important;
+            overscroll-behavior: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: white;
+        }
+
+        h1 {
+            color: #ffffff;
+            margin-bottom: 20px;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .song-display {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 30px;
+            font-family: Arial, Helvetica, sans-serif;
+            margin-top: 5%;
+        }
+
+        .song {
+            font-size: 18px;
+            color: #888;  /* gray color for previous and next */
+        }
+
+        .song.current {
+            font-size: 24px;
+            color: #ffffff;  /* white color for current song */
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 20px;
+        }
+
+        .control-button {
+            width: 60px;
+            height: 60px;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .control-button:hover {
+            background-color: #3e8e41;
+        }
+
+        .control-button:active {
+            background-color: #2e7031;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <h1>Music Player</h1>
+    <div class="button-container">
+        <button class="control-button" id="prevButton">⏮️</button>
+        <button class="control-button" id="playButton">▶️</button>
+        <button class="control-button" id="pauseButton">⏸️</button>
+        <button class="control-button" id="nextButton">⏭️</button>
+    </div>
+    <div class="song-display">
+        <div class="song" id="previousSong">Previous Song</div>
+        <div class="song current" id="currentSong">Current Song</div>
+        <div class="song" id="nextSong">Next Song</div>
+    </div>
+    
+    <script>
+        const wsUri = "ws://10.10.0.1/ws";
+        let websocket = null;
+
+        function initWebSocket() {
+            if(websocket != null){
+                return;
+            }
+            websocket = new WebSocket(wsUri);
+
+            websocket.onclose = function () {
+                console.log("WebSocket closed. Reconnecting...");
+                setTimeout(initWebSocket, 1000);
+            };
+
+            websocket.onopen = function () {
+                websocket.send(JSON.stringify({ type: "get_parameters" }));
+                console.log("WebSocket connection opened.");
+            };
+
+            websocket.onmessage = function (event) {
+                console.log("Message from server:", event.data);
+                
+                // Parse the received data and update song titles
+                if (isJson(event.data)) {
+                    const songData = JSON.parse(event.data);
+                    if (songData.previous && songData.current && songData.next) {
+                        document.getElementById("previousSong").textContent = songData.previous;
+                        document.getElementById("currentSong").textContent = songData.current;
+                        document.getElementById("nextSong").textContent = songData.next;
+                    }
+                }
+            };
+        }
+
+        initWebSocket();
+    
+        // Button click event handlers
+        document.getElementById("playButton").addEventListener("click", () => {
+            websocket.send(JSON.stringify({ command: "play" }));
+        });
+
+        document.getElementById("pauseButton").addEventListener("click", () => {
+            websocket.send(JSON.stringify({ command: "pause" }));
+        });
+
+        document.getElementById("nextButton").addEventListener("click", () => {
+            websocket.send(JSON.stringify({ command: "next" }));
+        });
+
+        document.getElementById("prevButton").addEventListener("click", () => {
+            websocket.send(JSON.stringify({ command: "previous" }));
+        });
+
+        function isJson(str) {
+            try {
+                JSON.parse(str);
+            } catch (e) {
+                return false;
+            }
+            return true;
+        }
+    </script>
+</body>
+</html>
