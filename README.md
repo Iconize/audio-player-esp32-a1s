@@ -48,6 +48,68 @@ if symbolic_link_maker worked you should see ```Custom Audio Board``` if not exi
 
 9. press escape a couple of times and ```y``` to apply the changes.
 
+### Change the get_i2s_function
+change the ```get_i2s_function``` in ```ai_thinker_esp32_a1s/board_pins_config.c```
+from:
+```c++
+esp_err_t get_i2s_pins(i2s_port_t port, board_i2s_pin_t *i2s_config)
+{
+    AUDIO_NULL_CHECK(TAG, i2s_config, return ESP_FAIL);
+    if (port == I2S_NUM_0) {
+        i2s_config->mck_io_num = GPIO_NUM_0;
+#if defined(CONFIG_AI_THINKER_ESP32_A1S_ES8388_VARIANT_7)
+        i2s_config->bck_io_num = GPIO_NUM_5;
+#elif defined(CONFIG_AI_THINKER_ESP32_A1S_ES8388_VARIANT_5)
+        i2s_config->bck_io_num = GPIO_NUM_27;
+#endif
+        i2s_config->ws_io_num = GPIO_NUM_25;
+        i2s_config->data_out_num = GPIO_NUM_26;
+        i2s_config->data_in_num = GPIO_NUM_35;
+    } else if (port == I2S_NUM_1) {
+        i2s_config->bck_io_num = -1;
+        i2s_config->ws_io_num = -1;
+        i2s_config->data_out_num = -1;
+        i2s_config->data_in_num = -1;
+    } else {
+        memset(i2s_config, -1, sizeof(board_i2s_pin_t));
+        ESP_LOGE(TAG, "i2s port %d is not supported", port);
+        return ESP_FAIL;
+    }
+
+    return ESP_OK;
+}
+````
+to:
+```c++
+esp_err_t get_i2s_pins(int port, board_i2s_pin_t *i2s_config)
+{
+    AUDIO_NULL_CHECK(TAG, i2s_config, return ESP_FAIL);
+    if (port == 0) {
+        i2s_config->mck_io_num = GPIO_NUM_0;
+#if defined(CONFIG_AI_THINKER_ESP32_A1S_ES8388_VARIANT_7)
+        i2s_config->bck_io_num = GPIO_NUM_5;
+#elif defined(CONFIG_AI_THINKER_ESP32_A1S_ES8388_VARIANT_5)
+        i2s_config->bck_io_num = GPIO_NUM_27;
+#endif
+        i2s_config->ws_io_num = GPIO_NUM_25;
+        i2s_config->data_out_num = GPIO_NUM_26;
+        i2s_config->data_in_num = GPIO_NUM_35;
+    } else if (port == 1) {
+        i2s_config->bck_io_num = -1;
+        i2s_config->ws_io_num = -1;
+        i2s_config->data_out_num = -1;
+        i2s_config->data_in_num = -1;
+    } else {
+        memset(i2s_config, -1, sizeof(board_i2s_pin_t));
+        ESP_LOGE(TAG, "i2s port %d is not supported", port);
+        return ESP_FAIL;
+    }
+
+    return ESP_OK;
+}
+```
+
+
 try to build and flash the project:
 ```bash
 idf.py build flash monitor
