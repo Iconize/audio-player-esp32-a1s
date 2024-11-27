@@ -45,8 +45,13 @@ if symbolic_link_maker worked you should see ```Custom Audio Board``` if not exi
 7. Select: ```Custom Audio Board -> Select a custom audio board (AI Thinker...) -> Ai Thinker ESP32 A1S Audio Kit (ES8388, variant 5)```
 
 8. Select: ```Custom Audio Board -> Use on-board SD card```
+9. ``` (Top) → Serial flasher config → Flash size```
+10. ``` (Top) → Component config → TCP Transport → Websocket ```
+11. ``` (Top) → Component config → HTTP Server -> WebSocket server support```
+12. ``` (Top) → Partition Table → Partition Table  -> custom partition table CSU```
+13. ``` (Top) → Component config → HTTP Server -> Max HTTP Request Header Length -> 1024```
 
-9. press escape a couple of times and ```y``` to apply the changes.
+14. press escape a couple of times and ```y``` to apply the changes.
 
 ### Change the get_i2s_function
 change the ```get_i2s_function``` in ```ai_thinker_esp32_a1s/board_pins_config.c```
