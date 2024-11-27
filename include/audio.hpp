@@ -29,6 +29,8 @@
 #include "sdcard_scan.h"
 #include "cJSON.h"
 
+#include "es8388.h"
+
 #include "wifi.hpp"
 
 static const char *TAG = "AUDIO";

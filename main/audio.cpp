@@ -258,6 +258,28 @@ void Audio::init(){
     audio_board_handle_t board_handle = audio_board_init();
     audio_hal_ctrl_codec(board_handle->audio_hal, AUDIO_HAL_CODEC_MODE_DECODE, AUDIO_HAL_CTRL_START);
 
+    ESP_LOGI(TAG, "[ 2.1 ] Initialize ES8388");
+
+    // Basic initialization
+    es8388_write_reg(ES8388_MASTERMODE, 0x00);      // Slave mode
+    es8388_write_reg(ES8388_CHIPPOWER, 0x00);       // Power up all systems
+
+    // // DAC settings
+    es8388_write_reg(ES8388_DACCONTROL1, 0x18);     // I2S format, 16-bit
+    es8388_write_reg(ES8388_DACCONTROL2, 0x02);     // Normal operation
+    es8388_write_reg(ES8388_DACCONTROL3, 0x00);     // Unmute DAC, no digital boost
+    
+    // // Clear DAC volume attenuation for both channels
+    es8388_write_reg(ES8388_DACCONTROL4, 0x00);     // Left DAC volume
+    es8388_write_reg(ES8388_DACCONTROL5, 0x00);     // Right DAC volume
+
+    es8388_write_reg(ES8388_DACCONTROL24, 0x21);  // LOUT1 volume
+    es8388_write_reg(ES8388_DACCONTROL25, 0x21);  // ROUT1 volume
+    es8388_write_reg(ES8388_DACCONTROL26, 0x21);  // LOUT2 volume
+    es8388_write_reg(ES8388_DACCONTROL27, 0x21);  // ROUT2 volume
+
+    audio_hal_set_volume(board_handle->audio_hal, 50);
+
     ESP_LOGI(TAG, "[ 3 ] Create and start input key service");
     input_key_service_info_t input_key_info[] = INPUT_KEY_DEFAULT_INFO();
     input_key_service_cfg_t input_cfg = INPUT_KEY_SERVICE_DEFAULT_CONFIG();
@@ -321,7 +343,6 @@ void Audio::init(){
     audio_pipeline_set_listener(pipeline, evt);
 
     ESP_LOGW(TAG, "[ 6 ] Press the keys to control music player:");
-    ESP_LOGW(TAG, "      [Play] to start, pause and resume, [Set] next song.");
     ESP_LOGW(TAG, "      [Vol-] or [Vol+] to adjust volume.");
 
     const int MAX_RETRY_COUNT = 3;
