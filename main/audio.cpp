@@ -251,14 +251,26 @@ void Audio::init(){
     for (int i = 0; i < sizeof(file_types)/sizeof(file_types[0]); i++) {
         sdcard_scan(sdcard_url_save_cb, "/sdcard", 0, &file_types[i], 1, sdcard_list_handle);
     }
-
     sdcard_list_show(sdcard_list_handle);
 
-    ESP_LOGI(TAG, "[ 2 ] Start codec chip");
+    ESP_LOGI(TAG, "[1.3] Create fatfs stream to read data from sdcard");
+    char *url = NULL;
+
+    if (sdcard_list_current(sdcard_list_handle, &url) == ESP_FAIL){
+        ESP_LOGE(TAG, "No files found on SD card");
+        return;
+    }
+
+    fatfs_stream_cfg_t fatfs_cfg = FATFS_STREAM_CFG_DEFAULT();
+    fatfs_cfg.type = AUDIO_STREAM_READER;
+    fatfs_stream_reader = fatfs_stream_init(&fatfs_cfg);
+    audio_element_set_uri(fatfs_stream_reader, url);
+
+    ESP_LOGI(TAG, "[2.0] Start codec chip");
     audio_board_handle_t board_handle = audio_board_init();
     audio_hal_ctrl_codec(board_handle->audio_hal, AUDIO_HAL_CODEC_MODE_DECODE, AUDIO_HAL_CTRL_START);
 
-    ESP_LOGI(TAG, "[ 2.1 ] Initialize ES8388");
+    ESP_LOGI(TAG, "[2.1] Initialize ES8388");
 
     // Basic initialization
     es8388_write_reg(ES8388_MASTERMODE, 0x00);      // Slave mode
@@ -280,7 +292,7 @@ void Audio::init(){
 
     audio_hal_set_volume(board_handle->audio_hal, 50);
 
-    ESP_LOGI(TAG, "[ 3 ] Create and start input key service");
+    ESP_LOGI(TAG, "[3.0] Create and start input key service");
     input_key_service_info_t input_key_info[] = INPUT_KEY_DEFAULT_INFO();
     input_key_service_cfg_t input_cfg = INPUT_KEY_SERVICE_DEFAULT_CONFIG();
     input_cfg.handle = set;
@@ -308,15 +320,8 @@ void Audio::init(){
     wav_decoder_cfg_t  wav_dec_cfg  = DEFAULT_WAV_DECODER_CONFIG();
     wav_decoder = wav_decoder_init(&wav_dec_cfg);
 
-    ESP_LOGI(TAG, "[4.4] Create fatfs stream to read data from sdcard");
-    char *url = NULL;
-    sdcard_list_current(sdcard_list_handle, &url);
+    ESP_LOGI(TAG, "[4.4] Select initial decoder");
     audio_element_handle_t initial_decoder = select_decoder(url);
-
-    fatfs_stream_cfg_t fatfs_cfg = FATFS_STREAM_CFG_DEFAULT();
-    fatfs_cfg.type = AUDIO_STREAM_READER;
-    fatfs_stream_reader = fatfs_stream_init(&fatfs_cfg);
-    audio_element_set_uri(fatfs_stream_reader, url);
 
     ESP_LOGI(TAG, "[4.5] Register all elements to audio pipeline");
     audio_pipeline_register(pipeline, fatfs_stream_reader, "file");
@@ -342,7 +347,7 @@ void Audio::init(){
     ESP_LOGI(TAG, "[5.1] Listen for all pipeline events");
     audio_pipeline_set_listener(pipeline, evt);
 
-    ESP_LOGW(TAG, "[ 6 ] Press the keys to control music player:");
+    ESP_LOGW(TAG, "[6.0] Press the keys to control music player:");
     ESP_LOGW(TAG, "      [Vol-] or [Vol+] to adjust volume.");
 
     const int MAX_RETRY_COUNT = 3;
