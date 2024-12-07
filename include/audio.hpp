@@ -49,6 +49,7 @@ namespace Audio {
     esp_err_t pipeline_pause();
     esp_err_t pipeline_next();
     esp_err_t pipeline_previous();
+    esp_err_t pipeline_load(char *url=NULL);
 
     static esp_err_t input_key_service_cb(periph_service_handle_t handle, periph_service_event_t *evt, void *ctx);
 

@@ -51,19 +51,12 @@ esp_err_t Audio::pipeline_pause(){
     return ESP_FAIL;
 }
 
-esp_err_t Audio::pipeline_next() {
-    char *url = NULL;
+esp_err_t Audio::pipeline_load(char *url) {
     
     // Stop and cleanup current playback
     audio_pipeline_stop(pipeline);
     audio_pipeline_wait_for_stop(pipeline);
     audio_pipeline_terminate(pipeline);
-    
-    esp_err_t err = sdcard_list_next(sdcard_list_handle, 1, &url);
-    if (err != ESP_OK || url == NULL) {
-        ESP_LOGE(TAG, "Failed to get next song URL");
-        return ESP_FAIL;
-    }
     
     ESP_LOGW(TAG, "URL: %s", url);
     
@@ -109,26 +102,29 @@ esp_err_t Audio::pipeline_next() {
     return ESP_OK;
 }
 
+esp_err_t Audio::pipeline_next() {
+    char *url = NULL;
+    
+    esp_err_t err = sdcard_list_next(sdcard_list_handle, 1, &url);
+    if (err != ESP_OK || url == NULL) {
+        ESP_LOGE(TAG, "Failed to get next song URL");
+        return ESP_FAIL;
+    }
+    
+    return pipeline_load(url);
+}
+
 esp_err_t Audio::pipeline_previous(){
     char *url = NULL; // Initialized here
-    audio_pipeline_stop(pipeline);
-    audio_pipeline_wait_for_stop(pipeline);
-    audio_pipeline_terminate(pipeline);
     
     // Check if the URL is successfully retrieved
     esp_err_t err = sdcard_list_prev(sdcard_list_handle, 1, &url);
-    if (err == ESP_OK && url != NULL) {
-        ESP_LOGW(TAG, "URL: %s", url);
-        audio_element_set_uri(fatfs_stream_reader, url);
-        audio_pipeline_reset_ringbuffer(pipeline);
-        audio_pipeline_reset_elements(pipeline);
-        audio_pipeline_run(pipeline);
-    } else {
+    if (err != ESP_OK || url == NULL) {
         ESP_LOGE(TAG, "Failed to get previous song URL");
         return ESP_FAIL;
     }
-    pipeline_show_song();
-    return ESP_OK;
+
+    return pipeline_load(url);
 }
 
 esp_err_t Audio::pipeline_show_song(){
@@ -219,6 +215,26 @@ static esp_err_t Audio::input_key_service_cb(periph_service_handle_t handle, per
                 ESP_LOGI(TAG, "[ * ] Volume set to %d %%", player_volume);
                 break;
             }
+            case 4: {
+                ESP_LOGI(TAG, "[ * ] [Prev] input key event");
+                pipeline_previous();
+                break;
+            }
+            case 2: {
+                ESP_LOGI(TAG, "[ * ] [Next] input key event");
+                pipeline_next();
+                break;
+            }
+            case 3: {
+                ESP_LOGI(TAG, "[ * ] [Play] input key event");
+                pipeline_play();
+                break;
+            }
+            case 1: {
+                ESP_LOGI(TAG, "[ * ] [Stop] input key event");
+                pipeline_pause();
+                break;
+            }
         }
     }
 
@@ -249,7 +265,7 @@ void Audio::init(){
     const char *file_types[] = {"wav", "mp3"};
 
     for (int i = 0; i < sizeof(file_types)/sizeof(file_types[0]); i++) {
-        sdcard_scan(sdcard_url_save_cb, "/sdcard", 0, &file_types[i], 1, sdcard_list_handle);
+        sdcard_scan(sdcard_url_save_cb, "/sdcard", 1, &file_types[i], 1, sdcard_list_handle);
     }
     sdcard_list_show(sdcard_list_handle);
 
@@ -409,7 +425,7 @@ void Audio::init(){
         vTaskDelay(pdMS_TO_TICKS(1));
     }
 
-    ESP_LOGI(TAG, "[ 7 ] Stop audio_pipeline");
+    ESP_LOGI(TAG, "[7.0] Stop audio_pipeline");
     audio_pipeline_stop(pipeline);
     audio_pipeline_wait_for_stop(pipeline);
     audio_pipeline_terminate(pipeline);
