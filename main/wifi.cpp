@@ -90,8 +90,38 @@ void Wifi::init() {
     ESP_LOGI(__FILE__, "init start");
 
     uint8_t ssid[32] = "Music Player";
-    uint8_t pwd[64] = "password123";
+    uint8_t pwd[64] = "playmusic";
 
+    // Get the MAC address for the Wi-Fi station interface
+    uint8_t mac[6];  // Array to hold MAC address (6 bytes)
+
+    // Initialize the Wi-Fi driver
+    wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
+    ESP_ERROR_CHECK(esp_wifi_init(&cfg));
+
+    esp_err_t result = esp_wifi_get_mac(WIFI_IF_STA, mac);
+
+    if (result == ESP_OK) {
+        // Convert the last 4 bytes to a string, removing colons
+        char last_four[5]; // Buffer for last 4 characters (plus null terminator)
+        snprintf(last_four, sizeof(last_four), "%02X%02X", mac[4], mac[5]);
+
+        // Create the final string with the prefix "Music Player "
+        char final_string[20];  // Buffer for the final string
+        snprintf(final_string, sizeof(final_string), "Music Player %s", last_four);
+
+         // Copy the final string into the uint8_t buffer
+        ssid[32]={0};
+        memcpy(ssid, final_string, strlen(final_string) + 1); // +1 to include null terminator
+
+        // Print the full MAC address and the extracted last 4 characters
+        ESP_LOGI(__FILE__, "Full MAC Address: %02X:%02X:%02X:%02X:%02X:%02X\n", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+        ESP_LOGI(__FILE__, "WiFi SSID: %s", ssid);
+    } else {
+        // Handle error
+        ESP_LOGI(__FILE__, "Failed to get MAC address: %s", esp_err_to_name(result));
+    }
+    
     strncpy((char*)wifi_settings.ap_ssid, (const char*)ssid, sizeof(wifi_settings.ap_ssid) - 1);
     wifi_settings.ap_ssid[sizeof(wifi_settings.ap_ssid) - 1] = '\0';  // Null-terminate
 
