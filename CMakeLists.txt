@@ -10,5 +10,5 @@ idf_build_set_property(PARTITION_TABLE_FILENAME "partitions.csv")
 
 project(audio-player-esp32-a1s)
 
-include_directories($ENV{ADF_PATH}/components)
-include_directories($ENV{ADF_PATH}/include)
+#include_directories($ENV{ADF_PATH}/components)
+#include_directories($ENV{ADF_PATH}/include)

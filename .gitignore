@@ -13,5 +13,5 @@ CMakeUserPresets.json
 
 /build
 /managed_components
-/components/ai-thinker-esp32-a1s
 *.lock
+.DS_Store
