@@ -29,7 +29,12 @@ audio_element_handle_t Audio::select_decoder(const char* url) {
 
 
 esp_err_t Audio::pipeline_play(){
-    if(audio_element_get_state(i2s_stream_writer) == AEL_STATE_PAUSED){
+    if(audio_element_get_state(i2s_stream_writer) == AEL_STATE_RUNNING){
+        audio_pipeline_pause(pipeline);
+        ESP_LOGI(TAG, "Pipeline paused");
+        return ESP_OK;
+    }
+    else if(audio_element_get_state(i2s_stream_writer) == AEL_STATE_PAUSED){
         audio_pipeline_resume(pipeline);
         ESP_LOGI(TAG, "Pipeline resumed");
         return ESP_OK;
@@ -46,6 +51,12 @@ esp_err_t Audio::pipeline_play(){
 esp_err_t Audio::pipeline_pause(){
     if(audio_element_get_state(i2s_stream_writer) == AEL_STATE_RUNNING){
         audio_pipeline_pause(pipeline);
+        ESP_LOGI(TAG, "Pipeline paused");
+        return ESP_OK;
+    } 
+    else if(audio_element_get_state(i2s_stream_writer) == AEL_STATE_PAUSED){
+        audio_pipeline_stop(pipeline);
+        ESP_LOGI(TAG, "Pipeline stopped");
         return ESP_OK;
     }
     return ESP_FAIL;
