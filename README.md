@@ -1,6 +1,9 @@
 # esp32-a1s-audio-player
 
-This repo describes a 
+This repo contains a demo MP3/Wav player for the AI Thinker board ESP32-A1S (v2.2 A417)
+![esp32-a1s-audio-development-board-with-wi-fi-and-bluetooth](https://github.com/user-attachments/assets/fbf24d5a-dd4f-4c02-9b23-0e5e95c90cb4)
+
+
 ## Code build environment set up
 
 ### Install ESP-ADF
