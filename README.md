@@ -4,10 +4,10 @@ This repo contains a demo MP3/Wav player for the AI Thinker board ESP32-A1S (v2.
 
 We use the ai-thinker-esp32-a1s PCB board [https://www.tinytronics.nl/en/development-boards/microcontroller-boards/with-wi-fi/ai-thinker-esp32-audio-kit-with-wi-fi-and-bluetooth] with ES8388 audio processor [http://www.everest-semi.com/pdf/ES8388%20DS.pdf].
 
-![Audio Thinker Board ESP32-A1S](https://github.com/user-attachments/assets/1fc82426-785d-4a7e-8996-7a6596986276)
+![esp32-a1s-audio-development-board-with-wi-fi-and-bluetooth](https://github.com/user-attachments/assets/fbf24d5a-dd4f-4c02-9b23-0e5e95c90cb4)
 
 ## Board overview
-![esp32-a1s-audio-development-board-with-wi-fi-and-bluetooth](https://github.com/user-attachments/assets/fbf24d5a-dd4f-4c02-9b23-0e5e95c90cb4)
+![Audio Thinker Board ESP32-A1S](https://github.com/user-attachments/assets/1fc82426-785d-4a7e-8996-7a6596986276)
 
 ## Board documentation:
 - https://docs.ai-thinker.com/en/esp32-audio-kit 
