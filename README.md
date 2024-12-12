@@ -1,7 +1,18 @@
 # esp32-a1s-audio-player
 
 This repo contains a demo MP3/Wav player for the AI Thinker board ESP32-A1S (v2.2 A417)
+
+## Board specs
+![Audio Thinker Board ESP32-A1S](https://github.com/user-attachments/assets/1fc82426-785d-4a7e-8996-7a6596986276)
 ![esp32-a1s-audio-development-board-with-wi-fi-and-bluetooth](https://github.com/user-attachments/assets/fbf24d5a-dd4f-4c02-9b23-0e5e95c90cb4)
+
+## Board documentation:
+- https://docs.ai-thinker.com/en/esp32-audio-kit 
+- https://github.com/Ai-Thinker-Open/ESP32-A1S-AudioKit 
+- https://github.com/pschatzmann/arduino-audiokit/wiki/GPIO-Overview-by-Selected-Board (because there are many board variants)
+
+## Board 3D printed housing
+https://www.printables.com/model/814645-esp32-audio-kit-v22-housing 
 
 
 ## Code build environment set up
