@@ -1,6 +1,7 @@
 # esp32-a1s-audio-player
 
 This repo contains a demo MP3/Wav player for the AI Thinker board ESP32-A1S (v2.2 A417)
+We use the ai-thinker-esp32-a1s PCB board [https://www.tinytronics.nl/en/development-boards/microcontroller-boards/with-wi-fi/ai-thinker-esp32-audio-kit-with-wi-fi-and-bluetooth] with ES8388 audio processor [http://www.everest-semi.com/pdf/ES8388%20DS.pdf].
 
 ## Board specs
 ![Audio Thinker Board ESP32-A1S](https://github.com/user-attachments/assets/1fc82426-785d-4a7e-8996-7a6596986276)
@@ -15,20 +16,17 @@ This repo contains a demo MP3/Wav player for the AI Thinker board ESP32-A1S (v2.
 https://www.printables.com/model/814645-esp32-audio-kit-v22-housing 
 
 
-## Code build environment set up
+# Code build environment set up
 
-### Install ESP-ADF
+## Install ESP-ADF
 ESP-ADF is ESP's audio development framework. 
 
 1. Install ```git``` if you haven't got it yet: https://github.com/git-guides/install-git
 2. Install ESP-ADF (Step 2): https://docs.espressif.com/projects/esp-adf/en/latest/get-started/index.html#quick-start
 3. Set up your environment (Step 3): https://docs.espressif.com/projects/esp-adf/en/latest/get-started/index.html#step-3-set-up-the-environment
+
  
-### Using the ESP-32-A1S audio board
-We use the ai-thinker-esp32-a1s PCB board [https://www.tinytronics.nl/en/development-boards/microcontroller-boards/with-wi-fi/ai-thinker-esp32-audio-kit-with-wi-fi-and-bluetooth] with E8388 audio processor. https://docs.ai-thinker.com/en/esp32-audio-kit 
-
-NB: An overview of the different ai-thinker-esp32-a1s board variants can be found here: https://github.com/pschatzmann/arduino-audiokit/wiki/GPIO-Overview-by-Selected-Board 
-
+# Using the ESP-32-A1S audio board
 
 Optional: To add the specific `ai_thinker (ES8388) 2957 3478` board to your ESP-ADF setup, do the following:
 1. clone or download the .zip from https://github.com/trombik/esp-adf-component-ai-thinker-esp32-a1s
